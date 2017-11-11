@@ -11,7 +11,7 @@ with open('sysConfig.json') as data_file:
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # get local machine name
-host = socket.gethostname()
+host = "10.142.0.3"
 
 port = sysConfig['serverPort']
 

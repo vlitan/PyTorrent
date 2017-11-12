@@ -11,7 +11,8 @@ with open('sysConfig.json') as data_file:
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # get local machine name
-host = "10.142.0.3"
+# host = "10.142.0.3"
+host = socket.gethostname()
 
 port = sysConfig['serverPort']
 
@@ -21,6 +22,6 @@ s.send('{"request":"send","sender":"me","reveicer":"him"}');
 # Receive no more than 1024 bytes
 tm = s.recv(1024)
 
-s.close()
+#s.close()
 
 print("The time got from the server is %s" % tm.decode('ascii'))

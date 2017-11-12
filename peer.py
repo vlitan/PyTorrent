@@ -1,58 +1,25 @@
 # peer.py
 import socket
 import json
+import time
 
 class serverSocket(object):
     """docstring for serverSocket."""
-    def host():
-        doc = "The host property."
-        def fget(self):
-            return self._host
-        def fset(self, value):
-            self._host = value
-        def fdel(self):
-            del self._host
-        return locals()
-        host = property(**host())
-    def port():
-        doc = "The port property."
-        def fget(self):
-            return self._port
-        def fset(self, value):
-            self._port = value
-        def fdel(self):
-            del self._port
-        return locals()
-        port = property(**port())
-    def socket():
-        doc = "The socket property."
-        def fget(self):
-            return self._socket
-        def fset(self, value):
-            self._socket = value
-        def fdel(self):
-            del self._socket
-        return locals()
-        socket = property(**socket())
 
     def bind(self):
-        socket.bind((host, port))
+        self.socket.bind((self.host, self.port))
         pass
 
     def listen(self, reqNb):
-        socket.listen(reqNb)
+        self.socket.listen(reqNb)
         pass
 
-    def accept(self):
-        clientsocket,addr = serversocket.accept()
-
-        print("Got a connection from %s" % str(addr))
-        req = json.loads(clientsocket.recv(1024))
-        print("got a request from %s : %s from %s to %s" % (str(addr), str(req['request']), str(req['sender']), str(req['reveicer'])))
-        currentTime = time.ctime(time.time()) + "\r\n"
-        clientsocket.send(currentTime.encode('ascii'))
+    def accept(self, requestHandler):
+        clientsocket,addr = self.socket.accept()
+        req = clientsocket.recv(1024)
+        clientsocket.send
+        clientsocket.send(requestHandler(addr, req))
         clientsocket.close()
-
         pass
 
     def __init__(self, port):
@@ -61,13 +28,37 @@ class serverSocket(object):
         self.host = socket.gethostname()
         self.port = port
 
+class clientSocket(object):
+    """docstring for clientSocket."""
+    def connect(self, arg):
+        self.socket.connect((self.host, self.port))
+        pass
+
+    def makeRequest(self, request):
+        self.socket.send(request)
+        return self.socket.recv(1024)
+
+    def close(self):
+        self.socket.close()
+        pass
+
+    def __init__(self, host, port):
+        super(clientSocket, self).__init__()
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 #load config
 with open('sysConfig.json') as data_file:
     sysConfig = json.load(data_file)
 
 server = serverSocket(sysConfig["serverPort"])
 server.bind()
-server.listen(5)
+server.listen(2)
+
+def requestHandler(addr, req):
+    print("[serverSocket] accepted request from %s: %s" % (str(addr), str(req)))
+    return ("response")
 
 while True:
-    server.accept()
+    server.accept(requestHandler)

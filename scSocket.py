@@ -23,23 +23,32 @@ class serverSocket(threading.Thread):
         clientsocket.close()
         pass
 
-    def run(self, requestHandler, reqNb):
-        self.listen(reqNb)
-        while True:
-            self.accept(requestHandler)
+    def run(self):
+        self.listen(self.reqNb)
+        self.running = True
+        print("[serverSocket] started running")
+        while self.running == True:
+            self.accept(self.requestHandler)
         pass
-    def __init__(self, port):
-        super(serverSocket, self).__init__()
+    def kill(self):
+        self.running = False
+        pass
+    def __init__(self, port, requestHandler, reqNb):
+        threading.Thread.__init__(self)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostname()
         self.port = port
+        self.requestHandler = requestHandler
+        self.reqNb = reqNb
         self.bind()
+        print("[serverSocket] created!")
+
 
 class clientSocket(object):
     """docstring for clientSocket."""
-    def connect(self):
-        self.socket.connect((self.host, self.port))
-        print("[clientSocket] connected to host: %s\tport: %s" % (str(self.host), str(self.port)) )
+    def connect(self, host, port):
+        self.socket.connect((host, port))
+        print("[clientSocket] connected to host: %s\tport: %s" % (str(host), str(port)) )
         pass
 
     def makeRequest(self, request):
@@ -50,9 +59,7 @@ class clientSocket(object):
         self.socket.close()
         pass
 
-    def __init__(self, host, port):
+    def __init__(self):
         super(clientSocket, self).__init__()
-        self.host = host
-        self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print("[clientSocket] created!")

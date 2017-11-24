@@ -21,7 +21,7 @@ class serverSocket(threading.Thread):
         print("[serverSocket] accept")
         req = self.clientsocket.recv(1024)
         self.clientsocket.send(requestHandler(self.clientaddr, req))
-        self.clientsocket.close()
+        #self.clientsocket.close()
         pass
 
     def run(self):
